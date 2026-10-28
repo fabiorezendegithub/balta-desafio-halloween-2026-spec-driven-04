@@ -172,6 +172,9 @@ Repita o teste usando códigos ainda não utilizados.
 
 ## 11. Arquivo de testes HTTP
 
+Para testar a API visualmente pelo Visual Studio Code, consulte o
+[manual de testes com Thunder Client](manual-thunder-client.md).
+
 Os cenários prontos estão em:
 
 ```text
