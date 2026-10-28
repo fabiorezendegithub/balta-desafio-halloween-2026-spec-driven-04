@@ -8,6 +8,15 @@ Content-Type: application/json
   "url": "https://balta.io"
 }
 
+### Código nulo (deve manter a geração automática)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/null-code",
+  "code": null
+}
+
 ### URL inválida (deve retornar 400)
 POST {{baseUrl}}/urls
 Content-Type: application/json

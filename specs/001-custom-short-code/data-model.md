@@ -1,36 +1,37 @@
-# Data Model: Custom Short Codes
+# Modelo de Dados: Códigos Curtos Personalizados
 
-## Existing entity: ShortUrl
+## Entidade existente: ShortUrl
 
-The existing `ShortUrl` entity remains unchanged.
+A entidade `ShortUrl` existente permanece inalterada.
 
-| Field | Existing rule | Feature impact |
+| Campo | Regra existente | Impacto da feature |
 |---|---|---|
-| `Id` | Integer identity | None |
-| `Code` | Required, maximum 32 characters, unique index | Stores either generated or custom code; uniqueness remains case-sensitive |
-| `OriginalUrl` | Required, maximum 2048 characters | Existing URL validation remains unchanged |
-| `CreatedAt` | UTC creation timestamp | None |
-| `Clicks` | Integer counter | Redirect through a custom code increments it as today |
+| `Id` | Identidade inteira | Nenhum |
+| `Code` | Obrigatório, máximo de 32 caracteres, índice único | Armazena código gerado ou personalizado; a unicidade continua diferenciando maiúsculas e minúsculas |
+| `OriginalUrl` | Obrigatório, máximo de 2048 caracteres | A validação existente da URL permanece inalterada |
+| `CreatedAt` | Data/hora de criação em UTC | Nenhum |
+| `Clicks` | Contador inteiro | O redirecionamento por código personalizado o incrementa como hoje |
 
-## Input contract change
+## Alteração do contrato de entrada
 
-`CreateShortUrlRequest` gains an optional `Code` value.
+`CreateShortUrlRequest` recebe um valor `Code` opcional.
 
-- Missing or null `Code`: retain automatic generation.
-- Empty or whitespace-only `Code`: validation error.
-- Non-empty `Code`: validate allowed characters, length, and reserved names before
-  persistence.
-- Accepted custom code casing is preserved exactly.
+- `Code` ausente ou nulo: manter a geração automática.
+- `Code` vazio ou somente com espaços: erro de validação.
+- `Code` não vazio: validar caracteres permitidos, tamanho e nomes reservados antes da
+  persistência.
+- A capitalização do código personalizado aceito é preservada exatamente.
 
-## Validation rules
+## Regras de validação
 
-- Allowed characters: letters, digits, hyphen, and underscore.
-- Length: 3 through 32 characters, inclusive.
-- Reserved names: `urls` and `openapi`, compared case-insensitively.
-- Existing code uniqueness: compared case-sensitively and enforced by the existing
-  unique database index.
+- Caracteres permitidos: letras, números, hífen e underscore.
+- Tamanho: de 3 a 32 caracteres, inclusive.
+- Nomes reservados: `urls` e `openapi`, comparados sem diferenciar maiúsculas de
+  minúsculas.
+- Unicidade de códigos existentes: comparada diferenciando maiúsculas de minúsculas e
+  garantida pelo índice único existente do banco.
 
-## State and lifecycle
+## Estado e ciclo de vida
 
-No new state or lifecycle is introduced. A URL short is created once with either a
-generated or custom code. Editing and removal remain out of scope.
+Nenhum estado ou ciclo de vida novo é introduzido. Uma URL curta é criada uma única vez
+com um código gerado ou personalizado. Edição e remoção permanecem fora do escopo.

@@ -1,36 +1,38 @@
-# Specification Quality Checklist: Custom Short Codes
+# Checklist de Qualidade da Especificação: Códigos Curtos Personalizados
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2026-10-27
+**Objetivo**: Validar a completude e a qualidade da especificação antes de avançar
+para o planejamento
+**Criado em**: 2026-10-27
 **Feature**: [spec.md](../spec.md)
 
-## Content Quality
+## Qualidade do Conteúdo
 
-- [x] No implementation details (languages, frameworks, APIs)
-- [x] Focused on user value and business needs
-- [x] Written for non-technical stakeholders
-- [x] All mandatory sections completed
+- [x] Não há detalhes de implementação (linguagens, frameworks, APIs)
+- [x] O foco está no valor para o usuário e nas necessidades do negócio
+- [x] O texto é compreensível para pessoas não técnicas
+- [x] Todas as seções obrigatórias foram preenchidas
 
-## Requirement Completeness
+## Completude dos Requisitos
 
-- [x] No [NEEDS CLARIFICATION] markers remain
-- [x] Requirements are testable and unambiguous
-- [x] Success criteria are measurable
-- [x] Success criteria are technology-agnostic (no implementation details)
-- [x] All acceptance scenarios are defined
-- [x] Edge cases are identified
-- [x] Scope is clearly bounded
-- [x] Dependencies and assumptions identified
+- [x] Não há marcadores [NEEDS CLARIFICATION]
+- [x] Os requisitos são testáveis e sem ambiguidades
+- [x] Os critérios de sucesso são mensuráveis
+- [x] Os critérios de sucesso são independentes de tecnologia
+- [x] Todos os cenários de aceitação estão definidos
+- [x] Os casos extremos foram identificados
+- [x] O escopo está claramente delimitado
+- [x] Dependências e premissas foram identificadas
 
-## Feature Readiness
+## Prontidão da Feature
 
-- [x] All functional requirements have clear acceptance criteria
-- [x] User scenarios cover primary flows
-- [x] Feature meets measurable outcomes defined in Success Criteria
-- [x] No implementation details leak into specification
+- [x] Todos os requisitos funcionais possuem critérios de aceitação claros
+- [x] Os cenários de usuário cobrem os fluxos principais
+- [x] A feature atende aos resultados mensuráveis definidos nos critérios de sucesso
+- [x] Não há detalhes de implementação vazando para a especificação
 
-## Notes
+## Observações
 
-- Specification reviewed against every checklist item; no issues found.
-- The branch hook could not create a branch because `.git/index.lock` is on a
-  read-only filesystem. This does not affect the specification artifacts.
+- A especificação foi revisada contra todos os itens do checklist; nenhum problema foi
+  encontrado.
+- O hook de branch não conseguiu criar uma branch porque `.git/index.lock` está em um
+  sistema de arquivos somente leitura. Isso não afeta os artefatos da especificação.

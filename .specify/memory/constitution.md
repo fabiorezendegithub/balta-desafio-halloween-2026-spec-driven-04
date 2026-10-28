@@ -1,107 +1,109 @@
 <!--
-Sync Impact Report
-- Version change: scaffold/unversioned → 1.0.0
-- Modified principles: template placeholders → eight project-specific principles
-- Added sections: Technical Constraints; Development Workflow and Quality Gates
-- Removed sections: none
-- Follow-up TODOs: confirm the historical ratification date
+Relatório de Impacto da Sincronização
+- Alteração de versão: scaffold/sem versão → 1.0.0
+- Princípios modificados: placeholders do template → oito princípios específicos do projeto
+- Seções adicionadas: Restrições Técnicas; Fluxo de Desenvolvimento e Gates de Qualidade
+- Seções removidas: nenhuma
+- Pendências: confirmar a data histórica de ratificação
 -->
 
-# EncurtaUrl Constitution
+# Constituição do EncurtaUrl
 
-## Core Principles
+## Princípios Fundamentais
 
 ### I. Simplicidade da API
 
-The application MUST remain a single .NET 10 Minimal API. Features MUST NOT add
-application layers, MediatR, repositories, or equivalent indirection. Endpoints MUST
-use `AppDbContext` directly when accessing persistence. This keeps the existing
-architecture small and explicit.
+A aplicação MUST permanecer como uma única Minimal API em .NET 10. Features MUST NOT
+adicionar camadas de aplicação, MediatR, repositórios ou indirection equivalente.
+Endpoints MUST usar `AppDbContext` diretamente ao acessar a persistência. Isso mantém
+a arquitetura existente pequena e explícita.
 
 ### II. Organização por Responsabilidade
 
-Endpoints MUST live in `Endpoints/` as extension methods over
-`IEndpointRouteBuilder` and MUST group related routes with `MapGroup`. Request and
-response records MUST live in `Contracts/`, entities MUST live in `Models/`, and
-small reusable services MUST live in `Services/` behind an interface. New code MUST
-follow these locations unless the plan explicitly justifies an exception.
+Endpoints MUST ficar em `Endpoints/` como métodos de extensão sobre
+`IEndpointRouteBuilder` e MUST agrupar rotas relacionadas com `MapGroup`. Records de
+request e response MUST ficar em `Contracts/`, entidades MUST ficar em `Models/` e
+serviços pequenos e reutilizáveis MUST ficar em `Services/` atrás de uma interface.
+Código novo MUST seguir esses locais, salvo quando o plano justificar explicitamente
+uma exceção.
 
 ### III. Contratos de Resposta HTTP
 
-Endpoints MUST use `TypedResults` and declare their possible outcomes with
-`Results<...>` when more than one result is possible. Validation failures MUST
-return `ValidationProblem` with HTTP 400. Other failures MUST return
-`ProblemDetails` with the status code that represents the failure. Existing response
-contracts MUST remain compatible.
+Endpoints MUST usar `TypedResults` e declarar seus possíveis resultados com
+`Results<...>` quando houver mais de um resultado possível. Falhas de validação MUST
+retornar `ValidationProblem` com HTTP 400. Outras falhas MUST retornar `ProblemDetails`
+com o código de status que representa a falha. Contratos de response existentes MUST
+permanecer compatíveis.
 
 ### IV. Persistência com SQLite e EF Core
 
-Persistence MUST use Entity Framework Core with SQLite. Application startup MUST
-create the database with `EnsureCreated`; migrations MUST NOT be introduced.
-Any schema change MUST be explicitly justified in the implementation plan and must
-account for the existing database-creation behavior.
+A persistência MUST usar Entity Framework Core com SQLite. A inicialização da aplicação
+MUST criar o banco com `EnsureCreated`; migrations MUST NOT ser introduzidas. Qualquer
+alteração de schema MUST ser justificada explicitamente no plano de implementação e
+considerar o comportamento existente de criação do banco.
 
 ### V. Compatibilidade de Contratos
 
-Existing request and response contracts MUST NOT be broken. Any new request field
-MUST be optional so existing clients continue to work. Changes that alter existing
-semantics, required fields, routes, or response shapes MUST include an explicit
-compatibility rationale in the plan.
+Contratos de request e response existentes MUST NOT ser quebrados. Qualquer campo novo
+em request MUST ser opcional para que os clientes existentes continuem funcionando.
+Alterações que mudem semântica, campos obrigatórios, rotas ou formatos de response
+existentes MUST incluir uma justificativa explícita de compatibilidade no plano.
 
 ### VI. Dependências Controladas
 
-No new NuGet package MAY be added without an explicit justification in the
-implementation plan. Existing framework and package choices are the default; a new
-dependency must demonstrate why the current platform and codebase cannot support
-the requirement without it.
+Nenhum pacote NuGet novo MAY ser adicionado sem justificativa explícita no plano de
+implementação. As escolhas atuais de framework e pacotes são o padrão; uma nova
+dependência deve demonstrar por que a plataforma e o código atuais não atendem ao
+requisito sem ela.
 
 ### VII. Verificação sem Projeto de Testes
 
-Because the project has no test project, every feature MUST add success and error
-scenarios to `EncurtaUrl.Api.http`. The API project MUST pass `dotnet build` and
-features MUST introduce no new compiler warnings. The scenarios MUST cover the
-feature's externally observable behavior, including relevant validation and failure
-paths.
+Como o projeto não possui um projeto de testes, toda feature MUST adicionar cenários
+de sucesso e erro ao `EncurtaUrl.Api.http`. O projeto da API MUST passar em
+`dotnet build` e as features MUST não introduzir novos warnings de compilação. Os
+cenários MUST cobrir o comportamento observável da feature, incluindo validações e
+fluxos de falha relevantes.
 
 ### VIII. Mensagens em Português
 
-User-facing error messages MUST be written in Portuguese. Source code identifiers,
-technical comments, and other implementation terminology MAY follow the existing
-project convention. This distinction preserves a Portuguese user experience while
-keeping code consistent with the current repository.
+Mensagens de erro exibidas ao usuário MUST estar em português. Identificadores do
+código-fonte, comentários técnicos e demais termos de implementação MAY seguir a
+convenção atual do projeto. Essa distinção preserva uma experiência em português sem
+perder a consistência do código existente.
 
-## Technical Constraints
+## Restrições Técnicas
 
-The canonical application is under `src/EncurtaUrl/src/EncurtaUrl.Api`. New work
-MUST preserve the current project layout and target `net10.0`. Route registration
-MUST remain centralized through endpoint mapping extensions. Database initialization,
-exception handling, status-code handling, and OpenAPI registration MUST remain
-consistent with the existing `Program.cs` unless a plan documents the reason for a
-change.
+A aplicação canônica está em `src/EncurtaUrl/src/EncurtaUrl.Api`. Código novo MUST
+preservar o layout atual do projeto e ter como alvo `net10.0`. O registro de rotas MUST
+continuar centralizado por meio de métodos de extensão de endpoints. A inicialização
+do banco, o tratamento de exceções, o tratamento de códigos de status e o registro do
+OpenAPI MUST permanecer consistentes com o `Program.cs` existente, salvo quando um
+plano documentar o motivo da mudança.
 
-## Development Workflow and Quality Gates
+## Fluxo de Desenvolvimento e Gates de Qualidade
 
-Before implementation, the plan MUST identify contract compatibility impact, schema
-impact, and any proposed dependency. During implementation, changes MUST be kept
-within the existing architecture and the `.http` scenarios MUST be updated with both
-success and error cases. Before completion, the project MUST be checked with
-`dotnet build`, and the resulting diff MUST be reviewed for new warnings, accidental
-contract breaks, untranslated user-facing errors, and unexplained architectural
-complexity.
+Antes da implementação, o plano MUST identificar o impacto na compatibilidade de
+contratos, o impacto no schema e qualquer dependência proposta. Durante a
+implementação, as alterações MUST permanecer dentro da arquitetura existente e os
+cenários `.http` MUST ser atualizados com casos de sucesso e erro. Antes da conclusão,
+o projeto MUST ser verificado com `dotnet build`, e o diff final MUST ser revisado
+quanto a novos warnings, quebras acidentais de contratos, mensagens de usuário não
+traduzidas e complexidade arquitetural sem justificativa.
 
-## Governance
+## Governança
 
-This constitution governs all new features and supersedes informal practices when
-they conflict. Every feature plan and implementation review MUST verify compliance
-with the Core Principles, Technical Constraints, and Quality Gates. Exceptions MUST
-be documented in the plan with scope, rationale, compatibility impact, and a
-follow-up decision or migration path.
+Esta constituição governa todas as novas features e prevalece sobre práticas informais
+quando houver conflito. Todo plano e toda revisão de implementação MUST verificar a
+conformidade com os Princípios Fundamentais, as Restrições Técnicas e os Gates de
+Qualidade. Exceções MUST ser documentadas no plano com escopo, justificativa, impacto
+de compatibilidade e uma decisão ou rota de migração futura.
 
-Amendments MUST update this document, include a Sync Impact Report, and increment the
-version according to semantic versioning: MAJOR for incompatible governance changes,
-MINOR for new or materially expanded principles or sections, and PATCH for clarifying
-or editorial changes. The last-amended date MUST be updated for every accepted
-amendment. The constitution MUST be reviewed whenever the project architecture or
-quality workflow changes materially.
+Alterações MUST atualizar este documento, incluir um Relatório de Impacto da
+Sincronização e incrementar a versão de acordo com versionamento semântico: MAJOR para
+alterações incompatíveis de governança, MINOR para princípios ou seções novos ou
+ampliados de forma relevante, e PATCH para esclarecimentos ou ajustes editoriais. A
+data da última alteração MUST ser atualizada em toda emenda aceita. A constituição
+MUST ser revisada sempre que a arquitetura ou o fluxo de qualidade do projeto mudar
+de forma relevante.
 
-**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): historical adoption date not recorded | **Last Amended**: 2026-10-27
+**Versão**: 1.0.0 | **Ratificada**: TODO(RATIFICATION_DATE): data histórica de adoção não registrada | **Última alteração**: 2026-10-27

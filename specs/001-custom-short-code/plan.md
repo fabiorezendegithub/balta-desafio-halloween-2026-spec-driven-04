@@ -1,70 +1,71 @@
-# Implementation Plan: Custom Short Codes
+# Plano de Implementação: Códigos Curtos Personalizados
 
-**Branch**: `001-custom-short-code` | **Date**: 2026-10-27 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-custom-short-code` | **Data**: 2026-10-27 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `/specs/001-custom-short-code/spec.md`
+**Entrada**: Especificação da feature em `/specs/001-custom-short-code/spec.md`
 
-## Summary
+## Resumo
 
-Extend the existing `POST /urls` flow with an optional custom code while preserving
-automatic generation when the field is absent. The request contract will gain an
-optional `Code` field. A small service in `Services/` will validate format, length,
-reserved route names, and the case-sensitive code rules. The existing unique database
-index remains the source of truth for races; a unique-constraint failure for a
-custom code is translated to an HTTP 409 ProblemDetails response. No endpoint,
-schema, NuGet package, or test project is added.
+Estender o fluxo existente de `POST /urls` com um código personalizado opcional,
+preservando a geração automática quando o campo não for informado. O contrato de
+request ganhará um campo opcional `Code`. Um serviço pequeno em `Services/` validará
+formato, tamanho, nomes de rotas reservados e as regras de diferenciação de maiúsculas
+e minúsculas. O índice único existente do banco continuará sendo a fonte de verdade
+para corridas; uma falha de restrição única para código personalizado será convertida
+em uma resposta HTTP 409 `ProblemDetails`. Nenhum endpoint, schema, pacote NuGet ou
+projeto de testes será adicionado.
 
-## Technical Context
+## Contexto Técnico
 
-**Language/Version**: C# on .NET 10 (`net10.0`)
+**Linguagem/Versão**: C# em .NET 10 (`net10.0`)
 
-**Primary Dependencies**: ASP.NET Core Minimal APIs, Entity Framework Core SQLite,
-Microsoft.AspNetCore.OpenApi; no new dependencies
+**Dependências Principais**: ASP.NET Core Minimal APIs, Entity Framework Core SQLite,
+Microsoft.AspNetCore.OpenApi; nenhuma dependência nova
 
-**Storage**: Existing SQLite database created with `EnsureCreated`; existing
-`ShortUrls.Code` maximum length 32 and unique index are reused
+**Armazenamento**: Banco SQLite existente, criado com `EnsureCreated`; o limite
+máximo de 32 caracteres e o índice único de `ShortUrls.Code` serão reutilizados
 
-**Testing**: `EncurtaUrl.Api.http` success/error scenarios plus `dotnet build`; no
-test project is introduced
+**Testes**: Cenários de sucesso/erro em `EncurtaUrl.Api.http` e `dotnet build`; nenhum
+projeto de testes será introduzido
 
-**Target Platform**: Existing .NET web API host on the project's current runtime
-platform
+**Plataforma-Alvo**: Host atual da API web em .NET
 
-**Project Type**: Single web service / Minimal API
+**Tipo de Projeto**: Serviço web único / Minimal API
 
-**Performance Goals**: Preserve current request behavior and add only one validation
-path and, for custom codes, the existing uniqueness lookup before persistence; no
-new latency or throughput target is required by the feature
+**Metas de Desempenho**: Preservar o comportamento atual das requisições e adicionar
+somente o caminho de validação e, para códigos personalizados, a consulta de
+unicidade já prevista antes da persistência; a feature não exige nova meta de
+latência ou vazão
 
-**Constraints**: No new endpoint, no schema change, no migrations, no new NuGet
-package, no authentication, no expiration, and no edit/remove flow
+**Restrições**: Nenhum endpoint novo, alteração de schema, migration, pacote NuGet
+novo, autenticação, expiração ou fluxo de edição/remoção
 
-**Scale/Scope**: One existing URL-shortening API and its current SQLite data model;
-the feature changes creation input and conflict handling only
+**Escala/Escopo**: Uma API existente de encurtamento de URLs e seu modelo SQLite
+atual; a feature altera apenas a entrada de criação e o tratamento de conflitos
 
-## Constitution Check
+## Verificação da Constituição
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*GATE: Deve passar antes da pesquisa da Fase 0. Reavaliar após o design da Fase 1.*
 
-- **Simplicity**: PASS — one existing Minimal API flow; no extra application layer,
-  MediatR, or repository.
-- **Organization**: PASS — request contract remains in `Contracts/`, validation
-  service is in `Services/`, and endpoint logic remains in `Endpoints/`.
-- **HTTP responses**: PASS — use `TypedResults`, `Results<...>`,
-  `ValidationProblem` for 400, and `ProblemDetails` for 409.
-- **Data**: PASS — SQLite and `EnsureCreated` remain unchanged; no schema change
-  or migration is planned.
-- **Compatibility**: PASS — `Code` is optional and omitted requests retain the
-  current generated-code behavior and response shape.
-- **Dependencies**: PASS — no NuGet package is added.
-- **Validation**: PASS — `.http` receives success and error scenarios and the
-  project is checked with `dotnet build` for new warnings.
-- **Language**: PASS — all new user-facing validation and conflict messages are in
-  Portuguese.
+- **Simplicidade**: PASS — um único fluxo de Minimal API; sem camada de aplicação
+  adicional, MediatR ou repository.
+- **Organização**: PASS — o contrato de request permanece em `Contracts/`, o serviço
+  de validação fica em `Services/` e a lógica do endpoint permanece em `Endpoints/`.
+- **Respostas HTTP**: PASS — uso de `TypedResults`, `Results<...>`,
+  `ValidationProblem` para 400 e `ProblemDetails` para 409.
+- **Dados**: PASS — SQLite e `EnsureCreated` permanecem inalterados; nenhuma
+  alteração de schema ou migration está planejada.
+- **Compatibilidade**: PASS — `Code` é opcional e requests sem ele mantêm o
+  comportamento e o formato de response atuais.
+- **Dependências**: PASS — nenhum pacote NuGet será adicionado.
+- **Validação**: PASS — `.http` receberá cenários de sucesso e erro e o projeto será
+  verificado com `dotnet build` quanto a novos warnings.
+- **Idioma**: PASS — todas as novas mensagens de validação e conflito estarão em
+  português.
 
-## Project Structure
+## Estrutura do Projeto
 
-### Documentation (this feature)
+### Documentação desta feature
 
 ```text
 specs/001-custom-short-code/
@@ -74,32 +75,32 @@ specs/001-custom-short-code/
 ├── quickstart.md
 ├── contracts/
 │   └── http-api.md
-└── tasks.md                  # created by $speckit-tasks
+└── tasks.md                  # criado pelo $speckit-tasks
 ```
 
-### Source Code (repository root)
+### Código-fonte (raiz do repositório)
 
 ```text
 src/EncurtaUrl/src/EncurtaUrl.Api/
 ├── Contracts/
-│   └── ShortUrlContracts.cs       # add optional Code to CreateShortUrlRequest
+│   └── ShortUrlContracts.cs       # adicionar Code opcional ao CreateShortUrlRequest
 ├── Data/
-│   └── AppDbContext.cs            # unchanged; existing unique Code index
+│   └── AppDbContext.cs            # inalterado; índice único de Code existente
 ├── Endpoints/
-│   └── ShortUrlEndpoints.cs       # choose/validate code and map conflicts
+│   └── ShortUrlEndpoints.cs       # escolher/validar código e mapear conflitos
 ├── Models/
-│   └── ShortUrl.cs                # unchanged
+│   └── ShortUrl.cs                # inalterado
 ├── Services/
-│   ├── ShortCodeGenerator.cs      # unchanged automatic generation
-│   └── ShortCodeValidator.cs      # new format/reserved-name rules
-└── EncurtaUrl.Api.http            # add success and error scenarios
+│   ├── ShortCodeGenerator.cs      # geração automática inalterada
+│   └── ShortCodeValidator.cs      # novas regras de formato/nomes reservados
+└── EncurtaUrl.Api.http            # adicionar cenários de sucesso e erro
 ```
 
-**Structure Decision**: Keep the existing single-project Minimal API structure.
-Extend the current create endpoint and request contract; add only the small
-validation service required by the feature. Persistence and existing routes remain
-in place.
+**Decisão de Estrutura**: Manter a estrutura atual de Minimal API em um único
+projeto. Estender o endpoint de criação e o contrato de request existentes, adicionando
+apenas o serviço pequeno de validação exigido pela feature. A persistência e as rotas
+existentes permanecem no lugar.
 
-## Complexity Tracking
+## Controle de Complexidade
 
-No constitution violations. No complexity exception is required.
+Nenhuma violação da constituição. Nenhuma exceção de complexidade é necessária.
