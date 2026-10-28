@@ -9,8 +9,9 @@
 Estender o fluxo existente de `POST /urls` com um código personalizado opcional,
 preservando a geração automática quando o campo não for informado. O contrato de
 request ganhará um campo opcional `Code`. Um serviço pequeno em `Services/` validará
-formato, tamanho, nomes de rotas reservados e as regras de diferenciação de maiúsculas
-e minúsculas. O índice único existente do banco continuará sendo a fonte de verdade
+formato, tamanho e nomes de rotas reservados sem diferenciar maiúsculas e minúsculas.
+A diferenciação entre códigos como `Balta` e `balta` será preservada pelo endpoint e
+pelo índice único existente do banco, que continuará sendo a fonte de verdade
 para corridas; uma falha de restrição única para código personalizado será convertida
 em uma resposta HTTP 409 `ProblemDetails`. Nenhum endpoint, schema, pacote NuGet ou
 projeto de testes será adicionado.
@@ -25,8 +26,9 @@ Microsoft.AspNetCore.OpenApi; nenhuma dependência nova
 **Armazenamento**: Banco SQLite existente, criado com `EnsureCreated`; o limite
 máximo de 32 caracteres e o índice único de `ShortUrls.Code` serão reutilizados
 
-**Testes**: Cenários de sucesso/erro em `EncurtaUrl.Api.http` e `dotnet build`; nenhum
-projeto de testes será introduzido
+**Testes**: Cenários de sucesso/erro em `EncurtaUrl.Api.http`, procedimento HTTP
+concorrente documentado em `quickstart.md` e `dotnet build`; nenhum projeto de testes
+será introduzido
 
 **Plataforma-Alvo**: Host atual da API web em .NET
 

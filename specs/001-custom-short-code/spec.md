@@ -110,8 +110,9 @@ do formato e verificar que cada tentativa é recusada com uma mensagem em portug
   informado, preservando o comportamento existente.
 - **FR-002a**: O sistema MUST rejeitar um campo de código enviado vazio ou composto
   apenas por espaços, em vez de gerar um código automaticamente.
-- **FR-003**: O sistema MUST aceitar códigos customizados contendo somente letras,
-  números, hífen e underscore.
+- **FR-003**: O sistema MUST aceitar códigos customizados compostos somente por
+  caracteres ASCII alfanuméricos (`A-Z`, `a-z`, `0-9`), hífen (`-`) e underscore
+  (`_`).
 - **FR-004**: O sistema MUST exigir que códigos customizados tenham entre 3 e 32
   caracteres, inclusive.
 - **FR-005**: O sistema MUST rejeitar códigos customizados já associados a outra URL

@@ -33,7 +33,7 @@ personalizados sem alterar a persistência ou introduzir uma nova dependência.
 
 **⚠️ CRÍTICO**: Concluir esta fase antes de implementar o comportamento das histórias.
 
-- [ ] T003 Criar `IShortCodeValidator` e `ShortCodeValidator` em `src/EncurtaUrl/src/EncurtaUrl.Api/Services/ShortCodeValidator.cs`, validando somente letras, números, hífen e underscore, exigindo tamanho de 3–32 inclusive, rejeitando `urls` e `openapi` sem diferenciar maiúsculas de minúsculas, preservando a capitalização aceita e retornando motivos de validação em português.
+- [ ] T003 Criar `IShortCodeValidator` e `ShortCodeValidator` em `src/EncurtaUrl/src/EncurtaUrl.Api/Services/ShortCodeValidator.cs`, validando somente caracteres ASCII alfanuméricos (`A-Z`, `a-z`, `0-9`), hífen e underscore, exigindo tamanho de 3–32 inclusive, rejeitando `urls` e `openapi` sem diferenciar maiúsculas de minúsculas, preservando a capitalização aceita e retornando motivos de validação em português; incluir cenários para rejeitar acentos e outros caracteres Unicode.
 - [ ] T004 Registrar o validator em `src/EncurtaUrl/src/EncurtaUrl.Api/Program.cs` usando o estilo existente de injeção de dependência, sem adicionar pacote NuGet ou outra camada de aplicação.
 
 **Checkpoint**: O validator compartilhado está disponível e o modelo de banco
@@ -92,7 +92,7 @@ duplicado e duplicidade concorrente, verificando respostas 400/409.
 
 - [ ] T011 [US3] Estender a assinatura de resultados tipados e os ramos de validação em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que falhas de formato, tamanho, vazio/espaços e código reservado retornem `TypedResults.ValidationProblem` com HTTP 400 e mensagens de campo em português.
 - [ ] T012 [US3] Adicionar a verificação de existência de código personalizado e capturar somente a `DbUpdateException` de restrição única do SQLite em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, retornando `TypedResults.Problem` com HTTP 409 e mensagem em português de código em uso para códigos personalizados, preservando o comportamento de falha da geração automática.
-- [ ] T013 [US3] Adicionar cenários de erro em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http` para caracteres não permitidos, menos de 3 caracteres, mais de 32 caracteres, valores vazios/com espaços, `urls`, `URLs`, `openapi`, `OpenApi`, código personalizado duplicado e resultados 400/409 esperados; documentar a verificação de duplicidade concorrente em `specs/001-custom-short-code/quickstart.md`.
+- [ ] T013 [US3] Adicionar cenários de erro em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http` para caracteres não permitidos, acentos e outros caracteres Unicode, menos de 3 caracteres, mais de 32 caracteres, valores vazios/com espaços, `urls`, `URLs`, `openapi`, `OpenApi`, código personalizado duplicado, URL original inválida com código válido e resultados 400/409 esperados; documentar em `specs/001-custom-short-code/quickstart.md` um procedimento executável com duas requisições concorrentes ao mesmo código, repetido pelo menos três vezes, esperando exatamente uma resposta 201 e uma 409.
 - [ ] T014 [US3] Verificar em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` que a identidade diferencia maiúsculas de minúsculas, de modo que códigos válidos distintos como `Balta` e `balta` não entrem em conflito, exceto quando reservados.
 
 **Checkpoint**: Todos os caminhos de rejeição de códigos personalizados especificados

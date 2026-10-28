@@ -29,8 +29,8 @@ Use `EncurtaUrl.Api.http` ou requisições HTTP equivalentes.
 5. **Listagem e detalhes**: `GET /urls` e `GET /urls/balta-io` incluem a URL
    personalizada com os mesmos campos das URLs geradas.
 6. **Formato/tamanho inválidos**: envie códigos com espaços ou símbolos não permitidos,
-   menos de 3 caracteres e mais de 32 caracteres; cada requisição retorna 400 com uma
-   mensagem de validação em português.
+   acentos ou outros caracteres Unicode, menos de 3 caracteres e mais de 32 caracteres;
+   cada requisição retorna 400 com uma mensagem de validação em português.
 7. **Código vazio**: envie um código vazio ou somente com espaços; a resposta deve
    ser 400, sem gerar um código.
 8. **Código reservado**: envie `urls`, `URLs`, `openapi` ou `OpenApi`; cada requisição
@@ -39,21 +39,35 @@ Use `EncurtaUrl.Api.http` ou requisições HTTP equivalentes.
    exato; a segunda requisição retorna 409 e informa que o código está em uso.
 10. **Identidade sensível a maiúsculas**: crie `Balta` e `balta`; ambos são aceitos
     como códigos distintos, salvo se algum valor for reservado.
-11. **Código duplicado concorrente**: envie duas requisições quase simultâneas com o
-    mesmo código personalizado ainda não usado. Exatamente uma deve retornar 201 e a
-    outra 409. Um comando para exercitar o cenário é:
+11. **URL original inválida com código válido**: envie uma URL inválida junto de um
+    código que atenda às regras. A validação existente da URL deve retornar seu erro
+    previsto, sem criar a URL curta. Por exemplo:
 
     ```bash
-    for i in 1 2; do
-      curl -sS -o "/tmp/custom-code-$i.json" -w "%{http_code}\n" \
-        -X POST http://localhost:5080/urls \
-        -H 'Content-Type: application/json' \
-        -d '{"url":"https://balta.io/concurrent-'"$i"'","code":"concorrente-unico"}' &
-    done
-    wait
+    curl -i -X POST http://localhost:5080/urls \
+      -H 'Content-Type: application/json' \
+      -d '{"url":"nao-e-uma-url","code":"codigo-valido"}'
     ```
 
-    Os dois códigos de status devem ser um `201` e um `409`.
+    A resposta deve ser o erro de validação existente da URL, sem persistir o recurso.
+12. **Código duplicado concorrente**: envie duas requisições quase simultâneas com o
+    mesmo código personalizado ainda não usado. Repita o procedimento pelo menos três
+    vezes; em cada execução, exatamente uma deve retornar 201 e a outra 409. Um comando
+    para exercitar o cenário é:
+
+    ```bash
+    for rodada in 1 2 3; do
+      for i in 1 2; do
+        curl -sS -o "/tmp/custom-code-$rodada-$i.json" -w "%{http_code}\n" \
+          -X POST http://localhost:5080/urls \
+          -H 'Content-Type: application/json' \
+          -d "{\"url\":\"https://balta.io/concurrent-$rodada-$i\",\"code\":\"concorrente-unico-$rodada\"}" &
+      done
+      wait
+    done
+    ```
+
+    Os dois códigos de status devem ser um `201` e um `409` em cada repetição.
 
 ## Verificações de conclusão
 
