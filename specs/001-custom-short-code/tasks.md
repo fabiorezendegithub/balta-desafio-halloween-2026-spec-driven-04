@@ -21,8 +21,8 @@ compartilhados de validação e contrato são concluídos antes do trabalho das 
 
 **Objetivo**: Confirmar os pontos do projeto existente que a feature deve preservar.
 
-- [ ] T001 [P] Revisar o fluxo existente de request, endpoint e response em `src/EncurtaUrl/src/EncurtaUrl.Api/Contracts/ShortUrlContracts.cs` e `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` antes de editar.
-- [ ] T002 [P] Confirmar o limite de 32 caracteres de `Code` e o índice único em `src/EncurtaUrl/src/EncurtaUrl.Api/Data/AppDbContext.cs`, e confirmar que nenhuma alteração de schema ou pacote é necessária em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.csproj`.
+- [X] T001 [P] Revisar o fluxo existente de request, endpoint e response em `src/EncurtaUrl/src/EncurtaUrl.Api/Contracts/ShortUrlContracts.cs` e `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` antes de editar.
+- [X] T002 [P] Confirmar o limite de 32 caracteres de `Code` e o índice único em `src/EncurtaUrl/src/EncurtaUrl.Api/Data/AppDbContext.cs`, e confirmar que nenhuma alteração de schema ou pacote é necessária em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.csproj`.
 
 ---
 
@@ -33,8 +33,8 @@ personalizados sem alterar a persistência ou introduzir uma nova dependência.
 
 **⚠️ CRÍTICO**: Concluir esta fase antes de implementar o comportamento das histórias.
 
-- [ ] T003 Criar `IShortCodeValidator` e `ShortCodeValidator` em `src/EncurtaUrl/src/EncurtaUrl.Api/Services/ShortCodeValidator.cs`, validando somente caracteres ASCII alfanuméricos (`A-Z`, `a-z`, `0-9`), hífen e underscore, exigindo tamanho de 3–32 inclusive, rejeitando `urls` e `openapi` sem diferenciar maiúsculas de minúsculas, preservando a capitalização aceita e retornando motivos de validação em português; incluir cenários para rejeitar acentos e outros caracteres Unicode.
-- [ ] T004 Registrar o validator em `src/EncurtaUrl/src/EncurtaUrl.Api/Program.cs` usando o estilo existente de injeção de dependência, sem adicionar pacote NuGet ou outra camada de aplicação.
+- [X] T003 Criar `IShortCodeValidator` e `ShortCodeValidator` em `src/EncurtaUrl/src/EncurtaUrl.Api/Services/ShortCodeValidator.cs`, validando somente caracteres ASCII alfanuméricos (`A-Z`, `a-z`, `0-9`), hífen e underscore, exigindo tamanho de 3–32 inclusive, rejeitando `urls` e `openapi` sem diferenciar maiúsculas de minúsculas, preservando a capitalização aceita e retornando motivos de validação em português; incluir cenários para rejeitar acentos e outros caracteres Unicode.
+- [X] T004 Registrar o validator em `src/EncurtaUrl/src/EncurtaUrl.Api/Program.cs` usando o estilo existente de injeção de dependência, sem adicionar pacote NuGet ou outra camada de aplicação.
 
 **Checkpoint**: O validator compartilhado está disponível e o modelo de banco
 existente permanece inalterado.
@@ -52,10 +52,10 @@ e a contagem de cliques.
 
 ### Implementação da História de Usuário 1
 
-- [ ] T005 [US1] Estender `CreateShortUrlRequest` em `src/EncurtaUrl/src/EncurtaUrl.Api/Contracts/ShortUrlContracts.cs` com um campo `Code` opcional, mantendo compatíveis o `Url` existente e os contratos de response.
-- [ ] T006 [US1] Atualizar `CreateAsync` em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` para diferenciar código ausente/nulo (geração automática) de código informado, validar códigos informados por meio de `IShortCodeValidator` e atribuir um código personalizado válido sem adicionar endpoint.
-- [ ] T007 [US1] Preservar o comportamento existente de `ToResponse`, listagem, detalhes e redirecionamento em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que códigos personalizados apareçam em `shortUrl`, detalhes, listagem e URLs de redirecionamento e incrementem `Clicks` exatamente como códigos gerados.
-- [ ] T008 [US1] Adicionar as requisições de sucesso de criação e redirecionamento com código personalizado em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http`, incluindo um valor de código que possa ser reutilizado nas requisições seguintes.
+- [X] T005 [US1] Estender `CreateShortUrlRequest` em `src/EncurtaUrl/src/EncurtaUrl.Api/Contracts/ShortUrlContracts.cs` com um campo `Code` opcional, mantendo compatíveis o `Url` existente e os contratos de response.
+- [X] T006 [US1] Atualizar `CreateAsync` em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` para diferenciar código ausente/nulo (geração automática) de código informado, validar códigos informados por meio de `IShortCodeValidator` e atribuir um código personalizado válido sem adicionar endpoint.
+- [X] T007 [US1] Preservar o comportamento existente de `ToResponse`, listagem, detalhes e redirecionamento em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que códigos personalizados apareçam em `shortUrl`, detalhes, listagem e URLs de redirecionamento e incrementem `Clicks` exatamente como códigos gerados.
+- [X] T008 [US1] Adicionar as requisições de sucesso de criação e redirecionamento com código personalizado em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http`, incluindo um valor de código que possa ser reutilizado nas requisições seguintes.
 
 **Checkpoint**: A História de Usuário 1 funciona de forma independente com um código
 personalizado válido e o caminho de código automático continua disponível.
@@ -72,8 +72,8 @@ gerado, listar URLs e consultar seus detalhes usando os campos de response exist
 
 ### Implementação da História de Usuário 2
 
-- [ ] T009 [US2] Verificar e, se necessário, ajustar a ramificação em `CreateAsync`, em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que `Code` omitido ou nulo use o gerador existente e mantenha inalterado o limite de tentativas.
-- [ ] T010 [US2] Adicionar cenários de sucesso de geração automática, `"code": null`, listagem e detalhes em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http`, confirmando que URLs geradas e personalizadas expõem os mesmos campos de response.
+- [X] T009 [US2] Verificar e, se necessário, ajustar a ramificação em `CreateAsync`, em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que `Code` omitido ou nulo use o gerador existente e mantenha inalterado o limite de tentativas.
+- [X] T010 [US2] Adicionar cenários de sucesso de geração automática, `"code": null`, listagem e detalhes em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http`, confirmando que URLs geradas e personalizadas expõem os mesmos campos de response.
 
 **Checkpoint**: Clientes existentes que enviam apenas `url` continuam funcionando sem
 quebra no contrato de request ou response.
@@ -90,10 +90,10 @@ duplicado e duplicidade concorrente, verificando respostas 400/409.
 
 ### Implementação da História de Usuário 3
 
-- [ ] T011 [US3] Estender a assinatura de resultados tipados e os ramos de validação em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que falhas de formato, tamanho, vazio/espaços e código reservado retornem `TypedResults.ValidationProblem` com HTTP 400 e mensagens de campo em português.
-- [ ] T012 [US3] Adicionar a verificação de existência de código personalizado e capturar somente a `DbUpdateException` de restrição única do SQLite em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, retornando `TypedResults.Problem` com HTTP 409 e mensagem em português de código em uso para códigos personalizados, preservando o comportamento de falha da geração automática.
-- [ ] T013 [US3] Adicionar cenários de erro em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http` para caracteres não permitidos, acentos e outros caracteres Unicode, menos de 3 caracteres, mais de 32 caracteres, valores vazios/com espaços, `urls`, `URLs`, `openapi`, `OpenApi`, código personalizado duplicado, URL original inválida com código válido e resultados 400/409 esperados; documentar em `specs/001-custom-short-code/quickstart.md` um procedimento executável com duas requisições concorrentes ao mesmo código, repetido pelo menos três vezes, esperando exatamente uma resposta 201 e uma 409.
-- [ ] T014 [US3] Verificar em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` que a identidade diferencia maiúsculas de minúsculas, de modo que códigos válidos distintos como `Balta` e `balta` não entrem em conflito, exceto quando reservados.
+- [X] T011 [US3] Estender a assinatura de resultados tipados e os ramos de validação em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, para que falhas de formato, tamanho, vazio/espaços e código reservado retornem `TypedResults.ValidationProblem` com HTTP 400 e mensagens de campo em português.
+- [X] T012 [US3] Adicionar a verificação de existência de código personalizado e capturar somente a `DbUpdateException` de restrição única do SQLite em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs`, retornando `TypedResults.Problem` com HTTP 409 e mensagem em português de código em uso para códigos personalizados, preservando o comportamento de falha da geração automática.
+- [X] T013 [US3] Adicionar cenários de erro em `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http` para caracteres não permitidos, acentos e outros caracteres Unicode, menos de 3 caracteres, mais de 32 caracteres, valores vazios/com espaços, `urls`, `URLs`, `openapi`, `OpenApi`, código personalizado duplicado, URL original inválida com código válido e resultados 400/409 esperados; documentar em `specs/001-custom-short-code/quickstart.md` um procedimento executável com duas requisições concorrentes ao mesmo código, repetido pelo menos três vezes, esperando exatamente uma resposta 201 e uma 409.
+- [X] T014 [US3] Verificar em `src/EncurtaUrl/src/EncurtaUrl.Api/Endpoints/ShortUrlEndpoints.cs` que a identidade diferencia maiúsculas de minúsculas, de modo que códigos válidos distintos como `Balta` e `balta` não entrem em conflito, exceto quando reservados.
 
 **Checkpoint**: Todos os caminhos de rejeição de códigos personalizados especificados
 são testáveis de forma independente e retornam a resposta tipada correta.
@@ -105,9 +105,9 @@ são testáveis de forma independente e retornam a resposta tipada correta.
 **Objetivo**: Executar os gates de qualidade do projeto e verificar que a implementação
 permaneceu dentro da arquitetura e do escopo aprovados.
 
-- [ ] T015 [P] Executar `dotnet build` em `src/EncurtaUrl/src/EncurtaUrl.Api/` e confirmar que não existem novos warnings de compilação.
-- [ ] T016 [P] Executar todos os cenários de `specs/001-custom-short-code/quickstart.md` contra `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http`, incluindo a verificação da contagem de cliques no redirecionamento.
-- [ ] T017 Revisar `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.csproj`, `src/EncurtaUrl/src/EncurtaUrl.Api/Data/AppDbContext.cs` e o diff final para confirmar que nenhum pacote NuGet, migration, alteração de schema, endpoint, projeto de testes, fluxo de edição/remoção, autenticação ou expiração foi adicionado.
+- [X] T015 [P] Executar `dotnet build` em `src/EncurtaUrl/src/EncurtaUrl.Api/` e confirmar que não existem novos warnings de compilação.
+- [X] T016 [P] Executar todos os cenários de `specs/001-custom-short-code/quickstart.md` contra `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.http`, incluindo a verificação da contagem de cliques no redirecionamento.
+- [X] T017 Revisar `src/EncurtaUrl/src/EncurtaUrl.Api/EncurtaUrl.Api.csproj`, `src/EncurtaUrl/src/EncurtaUrl.Api/Data/AppDbContext.cs` e o diff final para confirmar que nenhum pacote NuGet, migration, alteração de schema, endpoint, projeto de testes, fluxo de edição/remoção, autenticação ou expiração foi adicionado.
 
 ---
 

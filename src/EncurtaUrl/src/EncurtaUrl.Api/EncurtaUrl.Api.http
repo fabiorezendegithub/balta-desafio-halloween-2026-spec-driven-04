@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:5080
+@customCode = balta-io
 
 ### Criar uma URL curta (código gerado automaticamente)
 POST {{baseUrl}}/urls
@@ -6,6 +7,30 @@ Content-Type: application/json
 
 {
   "url": "https://balta.io"
+}
+
+### Criar uma URL com código personalizado
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/custom-code",
+  "code": "{{customCode}}"
+}
+
+### Redirecionar pelo código personalizado (302 e incrementa cliques)
+GET {{baseUrl}}/{{customCode}}
+
+### Detalhes do código personalizado
+GET {{baseUrl}}/urls/{{customCode}}
+
+### Código personalizado duplicado (409)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/duplicate",
+  "code": "{{customCode}}"
 }
 
 ### Código nulo (deve manter a geração automática)
@@ -36,3 +61,84 @@ GET {{baseUrl}}/aZ3k9Qx
 
 ### Código inexistente (404)
 GET {{baseUrl}}/nao-existe
+
+### Código com caracteres não permitidos (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/invalid-symbol",
+  "code": "inválido"
+}
+
+### Código com menos de 3 caracteres (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/too-short",
+  "code": "ab"
+}
+
+### Código com mais de 32 caracteres (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/too-long",
+  "code": "codigo-personalizado-com-mais-de-trinta-dois"
+}
+
+### Código vazio (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/empty",
+  "code": ""
+}
+
+### Código somente com espaços (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/whitespace",
+  "code": "   "
+}
+
+### Código reservado, sem diferenciar maiúsculas (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/reserved",
+  "code": "OpenApi"
+}
+
+### URL original inválida com código válido (400)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "nao-e-uma-url",
+  "code": "codigo-valido"
+}
+
+### Códigos distintos por capitalização (201 e 201)
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/Balta",
+  "code": "Balta"
+}
+
+###
+POST {{baseUrl}}/urls
+Content-Type: application/json
+
+{
+  "url": "https://balta.io/balta",
+  "code": "balta"
+}
